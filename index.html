@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balaram - Unity VR Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:400;700;900&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --secondary: #ff006e;
+            --accent: #8b00ff;
+            --bg-dark: #0a0e27;
+            --bg-card: #151932;
+            --text-primary: #e0e6ff;
+            --text-secondary: #8892b0;
+            --glow: rgba(0, 240, 255, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s infinite;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100vh) translateX(50px); }
+            50% { transform: translateY(-200vh) translateX(-30px); }
+            75% { transform: translateY(-300vh) translateX(70px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header/Hero */
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-content {
+            text-align: left;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glitch {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: inline-block;
+            animation: glitchPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glitchPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin: 1rem 0 2rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn:hover {
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn-secondary {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-secondary::before {
+            background: var(--secondary);
+        }
+
+        /* Skills Section */
+        .skills-section {
+            padding: 8rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .skill-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.4s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(0, 240, 255, 0.2);
+        }
+
+        .skill-card:hover::before {
+            width: 100%;
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+        }
+
+        .skill-list {
+            list-style: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .skill-list li::before {
+            content: '▹ ';
+            color: var(--primary);
+            margin-right: 0.5rem;
+        }
+
+        /* Projects Section */
+        .projects-section {
+            padding: 8rem 0;
+            background: linear-gradient(180deg, transparent, rgba(21, 25, 50, 0.5), transparent);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(255, 0, 110, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(0, 240, 255, 0.3);
+        }
+
+        .project-card:hover::after {
+            opacity: 1;
+        }
+
+        .project-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::before {
+            content: '🎮';
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+
+        .project-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .project-link::after {
+            content: '→';
+            margin-left: 0.5rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .project-link:hover {
+            color: var(--secondary);
+        }
+
+        .project-link:hover::after {
+            margin-left: 1rem;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 8rem 0;
+        }
+
+        .about-content {
+            max-width: 900px;
+            margin-top: 3rem;
+        }
+
+        .about-text {
+            color: var(--text-secondary);
+            line-height: 1.9;
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-text strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* GitHub Stats */
+        .github-section {
+            padding: 8rem 0;
+            background: linear-gradient(180deg, rgba(21, 25, 50, 0.3), transparent);
+        }
+
+        .github-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 3rem;
+            margin-top: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .github-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1), transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+
+        .github-username {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .github-link-btn {
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .skills-grid,
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll progress indicator -->
+    <div class="scroll-indicator" id="scrollProgress"></div>
+
+    <!-- Particles -->
+    <script>
+        // Create floating particles
+        for(let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            document.body.appendChild(particle);
+        }
+    </script>
+
+    <!-- Hero Section -->
+    <header>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="glitch">Balaram</h1>
+                <p class="subtitle">Unity Developer <span class="highlight">| AR/VR/MR | Games | Simulations</span></p>
+                <p class="about-text" style="max-width: 700px; animation: fadeInUp 1s ease-out 0.3s backwards;">
+                    Crafting immersive experiences across <strong>AR/VR/MR</strong>, <strong>2D/3D Games</strong>, 
+                    and <strong>3D Simulations</strong>. Specializing in <strong>Meta Quest development</strong>, 
+                    <strong>embedded systems integration</strong>, and production-ready Unity applications.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#projects" class="btn">View Projects</a>
+                    <a href="https://github.com/yourusername" target="_blank" class="btn btn-secondary">GitHub Profile</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Skills Section -->
+    <section class="skills-section">
+        <div class="container">
+            <h2 class="section-title">Technical Arsenal</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">🥽</div>
+                    <h3 class="skill-title">AR/VR/MR Development</h3>
+                    <ul class="skill-list">
+                        <li>Meta Quest SDK & XR</li>
+                        <li>AR Foundation</li>
+                        <li>Mixed Reality Toolkit</li>
+                        <li>AutoHand Framework</li>
+                        <li>Spatial Computing</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🎮</div>
+                    <h3 class="skill-title">Game Development</h3>
+                    <ul class="skill-list">
+                        <li>2D/3D Game Design</li>
+                        <li>Gameplay Programming</li>
+                        <li>Physics & Animations</li>
+                        <li>UI/UX Systems</li>
+                        <li>Multiplayer Networking</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🔬</div>
+                    <h3 class="skill-title">3D Simulation</h3>
+                    <ul class="skill-list">
+                        <li>Industrial Simulations</li>
+                        <li>Training Applications</li>
+                        <li>Real-time Physics</li>
+                        <li>Data Visualization</li>
+                        <li>Interactive Workflows</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🔌</div>
+                    <h3 class="skill-title">Embedded Systems</h3>
+                    <ul class="skill-list">
+                        <li>ESP32 BLE Integration</li>
+                        <li>IMU Sensors (MPU-9250)</li>
+                        <li>Serial Communication</li>
+                        <li>Hardware Controllers</li>
+                        <li>IoT Devices in Unity</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">⚙️</div>
+                    <h3 class="skill-title">Unity Mastery</h3>
+                    <ul class="skill-list">
+                        <li>DOTween Animations</li>
+                        <li>Odin Inspector</li>
+                        <li>Timeline & Cinemachine</li>
+                        <li>ScriptableObjects</li>
+                        <li>Custom Editor Tools</li>
+                    </ul>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🎯</div>
+                    <h3 class="skill-title">Core Competencies</h3>
+                    <ul class="skill-list">
+                        <li>Shader Development</li>
+                        <li>Performance Optimization</li>
+                        <li>Clean Architecture</li>
+                        <li>Photon Networking</li>
+                        <li>Cross-Platform Deploy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects-section" id="projects">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <span style="position: absolute; font-size: 4rem; opacity: 0.3;">🏭</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Automotive Assembly VR Training</h3>
+                        <p class="project-description">
+                            Comprehensive VR training system for automotive assembly including seat installation, 
+                            door assembly, and tyre change operations. Features step-based workflows with AutoHand 
+                            interactions and production-ready architecture.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Meta Quest</span>
+                            <span class="tag">AutoHand</span>
+                            <span class="tag">DOTween</span>
+                            <span class="tag">Industrial</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <span style="position: absolute; font-size: 4rem; opacity: 0.3;">🧯</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Fire Extinguisher VR Simulator</h3>
+                        <p class="project-description">
+                            Real-time fire extinguisher training with MPU-9250 IMU integration via ESP32 BLE. 
+                            Tracks orientation and movement for realistic safety training scenarios with accurate 
+                            gyroscope-based controls.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">BLE</span>
+                            <span class="tag">ESP32</span>
+                            <span class="tag">IMU Sensors</span>
+                            <span class="tag">Safety Training</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <span style="position: absolute; font-size: 4rem; opacity: 0.3;">🎮</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Unity Animation Framework</h3>
+                        <p class="project-description">
+                            Reusable animation system with DOTween controllers for sprite sequences, particle effects, 
+                            and transform animations. Features ScriptableObject architecture for designer-friendly workflows.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">DOTween</span>
+                            <span class="tag">Timeline</span>
+                            <span class="tag">Editor Tools</span>
+                            <span class="tag">Framework</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <span style="position: absolute; font-size: 4rem; opacity: 0.3;">🌐</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">AR Image Tracking System</h3>
+                        <p class="project-description">
+                            AR Foundation-based image recognition system with dynamic content placement. 
+                            Implements multi-target tracking with optimized performance for mobile AR experiences.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AR Foundation</span>
+                            <span class="tag">Image Tracking</span>
+                            <span class="tag">Mobile AR</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                        <span style="position: absolute; font-size: 4rem; opacity: 0.3;">🎣</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Fishing Game UI System</h3>
+                        <p class="project-description">
+                            Complete HUD system with particle effects, rotating glow animations, and shine effects. 
+                            Features sprite sequence controllers and smooth DOTween-based transitions.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">UI/UX</span>
+                            <span class="tag">VFX</span>
+                            <span class="tag">Particles</span>
+                            <span class="tag">Game Design</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image" style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);">
+                        <span style="position: absolute; font-size: 4rem; opacity: 0.3;">🔗</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Multiplayer VR Framework</h3>
+                        <p class="project-description">
+                            Photon Fusion-based networking solution for VR applications. Handles player synchronization, 
+                            object ownership, and networked interactions in virtual environments.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Photon Fusion</span>
+                            <span class="tag">Networking</span>
+                            <span class="tag">Multiplayer</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <p class="about-text">
+                    I'm a Unity developer with expertise spanning <strong>AR/VR/MR development</strong>, 
+                    <strong>2D/3D games</strong>, <strong>3D simulations</strong>, and <strong>embedded systems integration</strong>. 
+                    My passion lies in creating immersive, interactive experiences that push the boundaries of what's possible in Unity.
+                </p>
+                <p class="about-text">
+                    From industrial training simulations to engaging games, from augmented reality applications to 
+                    hardware-integrated VR experiences, I've worked across the full spectrum of Unity development. 
+                    I specialize in <strong>Meta Quest</strong> platforms and have deep experience with 
+                    <strong>embedded system integration</strong> using ESP32 and various sensor technologies.
+                </p>
+                <p class="about-text">
+                    My development philosophy emphasizes <strong>clean architecture</strong>, <strong>maintainable code</strong>, 
+                    and building systems that scale. I leverage advanced Unity tools like DOTween, Odin Inspector, and 
+                    ScriptableObjects to create designer-friendly workflows and robust, production-ready applications.
+                </p>
+                <p class="about-text">
+                    Whether it's crafting realistic physics simulations, implementing complex multiplayer systems, 
+                    or integrating IoT devices with Unity experiences, I bring technical expertise and creative 
+                    problem-solving to every project.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub Section -->
+    <section class="github-section">
+        <div class="container">
+            <h2 class="section-title">GitHub</h2>
+            <div class="github-card">
+                <div class="github-username">@yourusername</div>
+                <p class="about-text" style="margin-bottom: 0;">
+                    Check out my open-source contributions, Unity tools, and VR frameworks on GitHub.
+                    Always building, always learning.
+                </p>
+                <a href="https://github.com/yourusername" target="_blank" class="btn github-link-btn">
+                    Visit GitHub Profile
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="https://github.com/yourusername" target="_blank" class="social-link" title="GitHub">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576
