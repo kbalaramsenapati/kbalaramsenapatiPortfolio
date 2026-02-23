@@ -594,6 +594,17 @@
             font-size: 0.9rem;
         }
 
+        /* Contact info links hover effects */
+        a[href^="mailto:"],
+        a[href^="tel:"] {
+            transition: color 0.3s ease;
+        }
+
+        a[href^="mailto:"]:hover,
+        a[href^="tel:"]:hover {
+            color: var(--secondary) !important;
+        }
+
         /* Scroll indicator */
         .scroll-indicator {
             position: fixed;
@@ -674,6 +685,14 @@
                     Specialized in <strong>2D/3D game development</strong>, <strong>AR/VR/MR applications</strong>, 
                     <strong>industrial training simulations</strong>, and <strong>blockchain gaming</strong>.
                 </p>
+                <div style="margin: 1.5rem 0; animation: fadeInUp 1s ease-out 0.35s backwards;">
+                    <p style="color: var(--text-secondary); font-size: 1rem; margin-bottom: 0.5rem;">
+                        📧 <a href="mailto:balaramasenapati1@gmail.com" style="color: var(--primary); text-decoration: none; transition: color 0.3s;">balaramasenapati1@gmail.com</a>
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: 1rem;">
+                        📱 <a href="tel:+918455050715" style="color: var(--primary); text-decoration: none; transition: color 0.3s;">+91 84550 50715</a>
+                    </p>
+                </div>
                 <div class="availability">
                     <div class="status-container">
                         <div class="status-badge">
@@ -1082,6 +1101,20 @@
                     <strong style="color: var(--accent);">part-time developer</strong>, a <strong style="color: var(--secondary);">freelance specialist</strong>, 
                     or someone to bring your Unity project to life.
                 </p>
+                
+                <div style="margin: 2rem 0; padding: 2rem; background: var(--bg-card); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 8px;">
+                    <h3 style="font-family: 'Orbitron', sans-serif; color: var(--primary); margin-bottom: 1.5rem; font-size: 1.3rem;">Contact Information</h3>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 1rem;">
+                        📧 Email: <a href="mailto:balaramasenapati1@gmail.com" style="color: var(--primary); text-decoration: none; font-weight: 600;">balaramasenapati1@gmail.com</a>
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 1rem;">
+                        📱 Phone: <a href="tel:+918455050715" style="color: var(--primary); text-decoration: none; font-weight: 600;">+91 84550 50715</a>
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">
+                        💼 LinkedIn: <a href="https://www.linkedin.com/in/k-balaram-senapati/" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">k-balaram-senapati</a>
+                    </p>
+                </div>
+                
                 <div class="availability" style="justify-content: center;">
                     <div class="status-container" style="justify-content: center;">
                         <div class="status-badge">
@@ -1110,6 +1143,14 @@
     <!-- Footer -->
     <footer>
         <div class="container">
+            <div style="text-align: center; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(0, 240, 255, 0.1);">
+                <h3 style="font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem;">K Balaram Senapati</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Unity Developer | 6 Years Experience</p>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                    <a href="mailto:balaramasenapati1@gmail.com" style="color: var(--primary); text-decoration: none;">balaramasenapati1@gmail.com</a> | 
+                    <a href="tel:+918455050715" style="color: var(--primary); text-decoration: none;">+91 84550 50715</a>
+                </p>
+            </div>
             <div class="social-links">
                 <a href="https://github.com/kbalaramsenapati" target="_blank" class="social-link" title="GitHub">
                     <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
